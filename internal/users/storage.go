@@ -1,6 +1,11 @@
 package users
 
-import "gorm.io/gorm"
+import (
+	"errors"
+
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
+)
 
 type User struct {
 	gorm.Model
@@ -28,6 +33,18 @@ func (s *UserStorage) CheckExistingEmail(email string) bool {
 		return false
 	}
 
+}
+
+func (s *UserStorage) CheckPassword(email string, password string) error {
+	var user User
+	if err := s.db.Where("email = ?", email).First(&user).Error; err != nil {
+		return err
+	}
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err != nil {
+		return errors.New("Invalid password")
+	}
+	return nil
 }
 
 func (s *UserStorage) CreateUser(username, email, password string) (err error) {
