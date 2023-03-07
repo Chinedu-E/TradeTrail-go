@@ -36,16 +36,43 @@ func (t *UserController) register(c *gin.Context) {
 	}
 	password, _ := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
 	user.Password = string(password)
-	t.storage.db.Create(&user)
-	t.storage.db.Commit()
 
+	err := t.storage.CreateUser(user.Username, user.Email, user.Password)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"user": user,
 	})
 }
 
 func (t *UserController) login(c *gin.Context) {
+	email := c.PostForm("email")
+	password := c.PostForm("password")
 
+	exists := t.storage.CheckExistingEmail(email)
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid username",
+		})
+	}
+	// Verify password
+	err := t.storage.CheckPassword(email, password)
+	if err != nil {
+		c.JSON(401, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Generate jwt
+	tokenString, err := generateJWT(email)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	// return JWT token to client
+	c.JSON(200, gin.H{"token": tokenString})
 }
 
 func (t *UserController) getUser(c *gin.Context) {}
