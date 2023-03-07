@@ -42,7 +42,7 @@ func (s *UserStorage) CheckPassword(email string, password string) error {
 	}
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return errors.New("Invalid password")
+		return errors.New("invalid password")
 	}
 	return nil
 }
