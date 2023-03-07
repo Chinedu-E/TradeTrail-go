@@ -14,14 +14,12 @@ func NewUserController(storage *UserStorage) *UserController {
 	}
 }
 
-func (t *UserController) register(c *gin.Context) error {
-	return nil
+func (t *UserController) register(c *gin.Context) {}
+
+func (t *UserController) login(c *gin.Context) {
+
 }
 
-func (t *UserController) login(c *gin.Context) error {
-	return nil
-}
+func (t *UserController) getUser(c *gin.Context) {}
 
-func (t *UserController) getUser(c *gin.Context) error { return nil }
-
-func (t *UserController) getAllUsers(c *gin.Context) error { return nil }
+func (t *UserController) getAllUsers(c *gin.Context) {}
