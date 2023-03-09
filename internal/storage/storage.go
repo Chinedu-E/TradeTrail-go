@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func BootstrapMongo() *gorm.DB {
+func BootstrapPostgres() *gorm.DB {
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("Some error occured. Err: %s", err)
