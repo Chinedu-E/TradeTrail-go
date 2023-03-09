@@ -29,3 +29,27 @@ type SessionParticipants struct {
 type SessionStorage struct {
 	db *gorm.DB
 }
+
+func NewSessionStorage(db *gorm.DB) *SessionStorage {
+	return &SessionStorage{
+		db: db,
+	}
+}
+func (s *SessionStorage) GetSession(id int) (*Session, error) {
+	var session *Session
+	err := s.db.First(&session, id).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return session, nil
+}
+
+func (s *SessionStorage) Create(session *Session) (*Session, error) {
+
+	if err := s.db.Create(&session).Error; err != nil {
+
+		return nil, err
+	}
+	return session, nil
+}
