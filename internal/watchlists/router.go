@@ -5,10 +5,10 @@ import (
 )
 
 func AddWatchListRoutes(app *gin.Engine, controller *WatchListController) {
-	users := app.Group("/watchlist")
-	users.GET("/", controller.getWatchlists)
-	users.GET("/:id", controller.getWatchlist)
-	users.GET("/user/:id", controller.getUserWatchList)
-	users.POST("/add", controller.addToWatchList)
-	users.POST("/remove", controller.removeFromWatchList)
+	watchlists := app.Group("/watchlist")
+	watchlists.GET("/", controller.getWatchlists)
+	watchlists.GET("/:id", controller.getWatchlist)
+	watchlists.GET("/user/:id", controller.getUserWatchList)
+	watchlists.POST("/add", controller.addToWatchList)
+	watchlists.POST("/remove", controller.removeFromWatchList)
 }
