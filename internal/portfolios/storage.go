@@ -74,3 +74,19 @@ func (s *PortfolioStorage) GetAllUserPortfolios(id int) ([]*Portfolio, error) {
 
 	return portfolios, nil
 }
+
+func (s *PortfolioStorage) GetPortfolioHoldings(id int) ([]*UserPortfolio, error) {
+	var holdings []*UserPortfolio
+	if err := s.db.Table("user_portfolios").Where("portfolio_id = ?", id).Scan(&holdings).Error; err != nil {
+		return nil, err
+	}
+	return holdings, nil
+}
+
+func (s *PortfolioStorage) createPortfolio(portfolio *Portfolio) error {
+	if err := s.db.Create(&portfolio).Error; err != nil {
+
+		return err
+	}
+	return nil
+}
