@@ -53,3 +53,19 @@ func ConsumeChannel(queue string) <-chan amqp.Delivery {
 	failError(err, "Failed to register a consumer")
 	return msgs
 }
+
+func mostCommonString(strList []string) string {
+	freqMap := make(map[string]int)
+	maxFreq := 0
+	maxStr := ""
+
+	for _, str := range strList {
+		freqMap[str]++
+		if freqMap[str] > maxFreq {
+			maxFreq = freqMap[str]
+			maxStr = str
+		}
+	}
+
+	return maxStr
+}
