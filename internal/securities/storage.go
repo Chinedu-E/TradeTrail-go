@@ -48,3 +48,56 @@ type SecurityPrices struct {
 	Close  float64
 	Volume int64
 }
+
+type SecurityStorage struct {
+	db *gorm.DB
+}
+
+func NewTransactionStorage(db *gorm.DB) *SecurityStorage {
+	db.AutoMigrate(&LatestPrices{})
+	db.AutoMigrate(&SecuritiesInfo{})
+	db.AutoMigrate(&SecurityPrices{})
+	return &SecurityStorage{
+		db: db,
+	}
+}
+
+func (s *SecurityStorage) GetSecuritiesInfo(symbol string) (*SecuritiesInfo, error) {
+	var info *SecuritiesInfo
+	if err := s.db.Table("securities_info").Where("symbol = ?", symbol).Scan(&info).Error; err != nil {
+		return nil, err
+	}
+	return info, nil
+}
+
+func (s *SecurityStorage) GetLiveInfo(symbol string) (*LatestPrices, error) {
+	var info *LatestPrices
+	if err := s.db.Table("latest_prices").Where("symbol = ?", symbol).Scan(&info).Error; err != nil {
+		return nil, err
+	}
+	return info, nil
+}
+
+func (s *SecurityStorage) GetLatestPrices(limit int) ([]*LatestPriceResponse, error) {
+	var prices []*LatestPriceResponse
+	if err := s.db.Table("latest_prices").Order("volume DESC").Select("securities.name, latest_prices.symbol, latest_prices.price, latest_prices.previous_close").Joins("join securities on latest_prices.symbol = securities.symbol").Limit(limit).Scan(&prices).Error; err != nil {
+		return nil, err
+	}
+	return prices, nil
+}
+
+func (s *SecurityStorage) GetLatestPrice(symbol string) (float64, error) {
+	var price float64
+	if err := s.db.Table("latest_prices").Where("symbol = ?", symbol).Select("quote_price").Scan(&price).Error; err != nil {
+		return 0, err
+	}
+	return price, nil
+}
+
+func (s *SecurityStorage) GetSymbolHistory(symbol string, numDays int) ([]*SecurityPrices, error) {
+	var history []*SecurityPrices
+	if err := s.db.Table("security_prices").Order("date DESC").Where("symbol = ?", symbol).Limit(numDays).Scan(&history).Error; err != nil {
+		return nil, err
+	}
+	return history, nil
+}
