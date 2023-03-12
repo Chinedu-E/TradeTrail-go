@@ -20,7 +20,7 @@ func LivePrices(db *gorm.DB) {
 			if err := db.Table("latest_prices").Where("symbol = ?", securities.Symbol).UpdateColumns(securities).Error; err != nil {
 				log.Printf("There was an error: %s", err.Error())
 			}
-
+			go updateUsersPortfolioValue(db, securities.Symbol)
 		}
 	}()
 
