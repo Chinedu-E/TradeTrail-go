@@ -8,5 +8,5 @@ func AddTransactionRoutes(app *gin.Engine, controller *TransactionController) {
 	transactions.GET("/user/:id", controller.getUserTransactions)
 
 	transactions.POST("/buy", controller.buy)
-	transactions.POST("/buy", controller.sell)
+	transactions.POST("/sell", controller.sell)
 }
