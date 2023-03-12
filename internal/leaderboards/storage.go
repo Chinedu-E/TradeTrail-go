@@ -14,6 +14,7 @@ type LeaderBoardStorage struct {
 }
 
 func NewLeaderBoardStorage(db *gorm.DB) *LeaderBoardStorage {
+	db.AutoMigrate(&LeaderBoard{})
 	return &LeaderBoardStorage{
 		db: db,
 	}
