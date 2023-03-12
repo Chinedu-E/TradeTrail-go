@@ -36,6 +36,9 @@ type PortfolioStorage struct {
 }
 
 func NewPortfolioStorage(db *gorm.DB) *PortfolioStorage {
+	db.AutoMigrate(&Portfolio{})
+	db.AutoMigrate(&PortfolioValues{})
+	db.AutoMigrate(&UserPortfolio{})
 	return &PortfolioStorage{
 		db: db,
 	}
