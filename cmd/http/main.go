@@ -9,9 +9,11 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/Chinedu-E/TradeTrail-go/internal/consumers"
 	"github.com/Chinedu-E/TradeTrail-go/internal/leaderboards"
 	"github.com/Chinedu-E/TradeTrail-go/internal/middleware"
 	"github.com/Chinedu-E/TradeTrail-go/internal/portfolios"
+	"github.com/Chinedu-E/TradeTrail-go/internal/securities"
 	"github.com/Chinedu-E/TradeTrail-go/internal/sessions"
 	"github.com/Chinedu-E/TradeTrail-go/internal/storage"
 	"github.com/Chinedu-E/TradeTrail-go/internal/transactions"
@@ -70,10 +72,22 @@ func main() {
 	transactionController := transactions.NewTransactionController(transactionStore)
 	transactions.AddTransactionRoutes(router, transactionController)
 
+	// Securities
+	securityStore := securities.NewSecurityStorage(db)
+	securityController := securities.NewSecurityController(securityStore)
+	securities.AddSecuritiesRoutes(router, securityController)
+
+	// Server
 	srv := &http.Server{
 		Addr:    ":8080",
 		Handler: router,
 	}
+
+	// Consumers
+	go consumers.DailyUpdates(db)
+	go consumers.LivePrices(db)
+	go consumers.SessionUpdates(db)
+	go consumers.SymbolUpdates(db)
 
 	go func() {
 		// service connections
