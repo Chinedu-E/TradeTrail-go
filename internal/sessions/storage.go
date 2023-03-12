@@ -31,6 +31,8 @@ type SessionStorage struct {
 }
 
 func NewSessionStorage(db *gorm.DB) *SessionStorage {
+	db.AutoMigrate(&Session{})
+	db.AutoMigrate(&SessionParticipants{})
 	return &SessionStorage{
 		db: db,
 	}
