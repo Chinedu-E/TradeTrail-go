@@ -14,6 +14,7 @@ import (
 	"github.com/Chinedu-E/TradeTrail-go/internal/portfolios"
 	"github.com/Chinedu-E/TradeTrail-go/internal/sessions"
 	"github.com/Chinedu-E/TradeTrail-go/internal/storage"
+	"github.com/Chinedu-E/TradeTrail-go/internal/transactions"
 	"github.com/Chinedu-E/TradeTrail-go/internal/users"
 	"github.com/Chinedu-E/TradeTrail-go/internal/watchlists"
 	"github.com/gin-contrib/cors"
@@ -22,6 +23,8 @@ import (
 
 func main() {
 	db := storage.BootstrapPostgres()
+
+	gin.ForceConsoleColor()
 
 	router := gin.Default()
 
@@ -61,6 +64,11 @@ func main() {
 	portfolioStore := portfolios.NewPortfolioStorage(db)
 	portfolioController := portfolios.NewPortfolioController(portfolioStore)
 	portfolios.AddPortfolioRoutes(router, portfolioController)
+
+	// Transactions
+	transactionStore := transactions.NewTransactionStorage(db)
+	transactionController := transactions.NewTransactionController(transactionStore)
+	transactions.AddTransactionRoutes(router, transactionController)
 
 	srv := &http.Server{
 		Addr:    ":8080",
