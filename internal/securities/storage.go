@@ -53,7 +53,7 @@ type SecurityStorage struct {
 	db *gorm.DB
 }
 
-func NewTransactionStorage(db *gorm.DB) *SecurityStorage {
+func NewSecurityStorage(db *gorm.DB) *SecurityStorage {
 	db.AutoMigrate(&LatestPrices{})
 	db.AutoMigrate(&SecuritiesInfo{})
 	db.AutoMigrate(&SecurityPrices{})
