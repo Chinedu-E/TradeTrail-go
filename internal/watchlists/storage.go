@@ -15,6 +15,7 @@ type WatchListStorage struct {
 }
 
 func NewWatchListStorage(db *gorm.DB) *WatchListStorage {
+	db.AutoMigrate(&WatchList{})
 	return &WatchListStorage{
 		db: db,
 	}
