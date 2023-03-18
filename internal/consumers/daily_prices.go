@@ -11,7 +11,7 @@ import (
 )
 
 func DailyUpdates(db *gorm.DB) {
-	msgs := ConsumeChannel("sessions")
+	msgs := ConsumeChannel("prices")
 
 	var forever chan struct{}
 
